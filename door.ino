@@ -3,7 +3,7 @@ int ClosePin = 7;
 int Redlight = 8;
 int GreenLight = 9;
 
-String key = String("12345"); //key code
+String key = String("asdf"); //key code
 String entered = String("00000"); //variable for entered code by user
 
 int keylength = 5;
@@ -39,8 +39,6 @@ void setup()
 
 void loop()
 {
-
-
 	if (entered == key && status == false) 
 	{
 		status = true;
@@ -53,7 +51,10 @@ void loop()
 	{
 		digitalWrite(Redlight, HIGH);
 		status = false;
-
+    	//Serial.print("Locked \n");
+    	delay(500);
+    	//Serial.print(entered);
+    	//Serial.print('\n');
 	}
 
 
@@ -65,6 +66,8 @@ void loop()
 		pinMode(Redlight, LOW);
 		pinMode(GreenLight, HIGH);	
 		time2 = millis();
+		Serial.print("opened \n");
+		delay(500);
 	}
 
 	if (time2 - time1 > 10000 && status == true)
@@ -75,7 +78,7 @@ void loop()
 		digitalWrite(Redlight, HIGH);
 		digitalWrite(GreenLight, LOW);
 		entered = "00000";	
-		Serial.print("timeout");
+		Serial.print("timeout \n");
 		delay(100);
 	}
 
@@ -87,14 +90,20 @@ void serialEvent()
 	while(Serial.available())
 	{
 	    
-	    	while (index < keylength)
+	    	
 	    	{
-	    		entered [index] = Serial.read();
-	    		index++
-			;}
+          		if(Serial.read() == '\n')
+	            {
+	              break;
+	            }
+	    		entered = Serial.readString();
+	    		index = index + 1;
+         
+			}
 		
 
 	}
 	
 	index = 0;
+
 }
