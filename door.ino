@@ -95,8 +95,10 @@ int ClosePin = 7;
 int Redlight = 8;
 int GreenLight = 9;
 
-String key = String("1"); //key code
-String entered = String("0"); //variable for entered code by user
+String key = String("12345"); //key code
+String entered = String("00000"); //variable for entered code by user
+
+bool keyStatus = false;
 
 int keylength = 5;
 
@@ -144,21 +146,13 @@ void loop()
  Blynk.run();
 
 
-  if (entered == key && status == false) 
+  if (keyStatus == true && status == false) 
   {
     status = true;
     time1 = millis();
     Serial.print("unlocked");
 
   }
-
-  else if (entered != key)
-  {
-    digitalWrite(Redlight, HIGH);
-    status = false;
-
-  }
-
 
 
   if (status == true)
@@ -177,7 +171,8 @@ void loop()
     digitalWrite(ClosePin, HIGH);
     digitalWrite(Redlight, HIGH);
     digitalWrite(GreenLight, LOW);
-    entered = "00000";  
+    //entered = "00000";  
+    keyStatus = false;
     Serial.print("timeout");
     delay(100);
   }
@@ -205,11 +200,21 @@ void loop()
 }
 */
 
-BLYNK_WRITE(V1) 
+BLYNK_WRITE(V2) 
 {
 
-  key = param.asStr();
+  if(key == param.asStr())
+  {
+	  keyStatus == true;
+  }
+  else if (key != param.asStr())
+  {
+	 
+    digitalWrite(Redlight, HIGH);
+    status = false;
 
+  }
+  terminal.flush();
 }
 
 
